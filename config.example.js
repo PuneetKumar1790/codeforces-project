@@ -1,12 +1,13 @@
 // config.example.js - Example Firebase Configuration (DO NOT USE IN PRODUCTION)
 const firebaseConfig = {
-    apiKey: window.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: window.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: window.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: window.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: window.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: window.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: window.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+   apiKey: "AIzaSyB5PmC_MVog8h3apY_dihiWtE-W7B_wz5o",
+  authDomain: "codeforces-1cd9c.firebaseapp.com",
+  projectId: "codeforces-1cd9c",
+  storageBucket: "codeforces-1cd9c.firebasestorage.app",
+  messagingSenderId: "725740122293",
+  appId: "1:725740122293:web:e5fdbdb25becf8793a4efc",
+  measurementId: "G-PKN5WRHG50"
+
 };
 
 // Prevent duplicate initialization
