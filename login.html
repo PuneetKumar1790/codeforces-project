@@ -54,28 +54,61 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-    <!-- Firebase Config (Injected Dynamically) -->
-    <script src="config.js"></script>
+<!-- Firebase Config -->
+<script src="config.js"></script>
 
-    <script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const auth = firebase.auth();
+
         document.getElementById("loginForm").addEventListener("submit", async function (event) {
             event.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                alert("Both email and password are required!");
+                return;
+            }
 
             try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
+                await auth.signInWithEmailAndPassword(email, password);
                 alert("Login successful!");
-                window.location.href = "main_model.html";
+                window.location.href = "food_model.html";
             } catch (error) {
-                alert(error.message);
+                handleFirebaseError(error);
             }
         });
-    </script>
+
+        function handleFirebaseError(error) {
+            let errorMessage;
+
+            switch (error.code) {
+                case "auth/invalid-email":
+                    errorMessage = "Invalid email format. Please check your email.";
+                    break;
+                case "auth/user-not-found":
+                    errorMessage = "No account found with this email.";
+                    break;
+                case "auth/wrong-password":
+                    errorMessage = "Incorrect password. Please try again.";
+                    break;
+                case "auth/network-request-failed":
+                    errorMessage = "Network error! Please check your internet connection.";
+                    break;
+                default:
+                    errorMessage = "Login failed! Please try again.";
+            }
+
+            alert(errorMessage);
+        }
+    });
+</script>
+
 
 </body>
 

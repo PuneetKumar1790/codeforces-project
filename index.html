@@ -65,43 +65,67 @@
         </div>
     </div>
 
-    <script type="module">
-        import firebaseConfig from './config.js';  // Import Firebase config
-    
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<!-- Firebase Config -->
+<script src="config.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
         const auth = firebase.auth();
-    
-        document.addEventListener("DOMContentLoaded", function () {
-            const signupForm = document.getElementById("signupForm");
-    
-            if (!signupForm) {
-                console.error("Signup form not found.");
+
+        document.getElementById("signupForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const confirmPassword = document.getElementById("confirm-password").value.trim();
+
+            if (!email || !password || !confirmPassword) {
+                alert("All fields are required!");
                 return;
             }
-    
-            signupForm.addEventListener("submit", function (event) {
-                event.preventDefault();
-                const email = document.getElementById("email").value;
-                const password = document.getElementById("password").value;
-                const confirmPassword = document.getElementById("confirm-password").value;
-    
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match!");
-                    return;
-                }
-    
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        alert("Account created successfully!");
-                        window.location.href = "login.html";
-                    })
-                    .catch((error) => {
-                        alert(error.message);
-                    });
-            });
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                alert("Account created successfully!");
+                window.location.href = "login.html";
+            } catch (error) {
+                handleFirebaseError(error);
+            }
         });
-    </script>
+
+        function handleFirebaseError(error) {
+            let errorMessage;
+
+            switch (error.code) {
+                case "auth/email-already-in-use":
+                    errorMessage = "This email is already in use.";
+                    break;
+                case "auth/invalid-email":
+                    errorMessage = "Invalid email format.";
+                    break;
+                case "auth/weak-password":
+                    errorMessage = "Password is too weak. Use at least 6 characters.";
+                    break;
+                case "auth/network-request-failed":
+                    errorMessage = "Network issue! Please try again.";
+                    break;
+                default:
+                    errorMessage = "Signup failed! Please try again.";
+            }
+
+            alert(errorMessage);
+        }
+    });
+</script>
+
     
 </body>
 
