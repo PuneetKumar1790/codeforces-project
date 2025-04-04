@@ -10,7 +10,10 @@ const dotenv = require("dotenv");
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.use(cors());
+app.use(cors({
+  origin: "https://codeforces-project.vercel.app"
+}));
+
 app.use(express.json());
 
 // Main - Model-Fumctionality
