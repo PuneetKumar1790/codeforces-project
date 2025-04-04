@@ -1,6 +1,6 @@
 // config.example.js - Example Firebase Configuration (DO NOT USE IN PRODUCTION)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY_HERE",
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: "YOUR_AUTH_DOMAIN_HERE",
     projectId: "YOUR_PROJECT_ID_HERE",
     storageBucket: "YOUR_STORAGE_BUCKET_HERE",
