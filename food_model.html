@@ -141,7 +141,7 @@
             resultDiv.innerHTML = "<p class='text-neutral'>Analyzing food label...</p>";
 
             try {
-                const response = await fetch("http://192.168.215.142:5000/analyze-food", {
+                const response = await fetch("https://codeforces-project-production.up.railway.app/analyze-food", {
                     method: "POST",
                     body: formData
                 });
