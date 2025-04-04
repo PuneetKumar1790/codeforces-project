@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriLens - See Beyond the Label</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4CAF50',
+                        secondary: '#FF9800',
+                        neutral: '#6D6D6D',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen bg-white">
+
+    <!-- Header -->
+    <header class="bg-primary text-white">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/DALL%C2%B7E%202025-01-17%2012.03.47%20-%20A%20modern,%20sleek%20logo%20design%20for%20a%20web%20app%20called%20'NutriLens'.%20The%20logo%20features%20a%20vibrant%20color%20palette%20of%20green,%20orange,%20and%20white%20to%20symbolize%20healt-9lV4sxKPGokUyAvSJjt0hyXB9m1a8t.webp"
+                        alt="NutriLens Logo" class="w-16 h-16 rounded-full bg-white p-1">
+                    <div>
+                        <h1 class="text-3xl font-bold">NutriLens</h1>
+                        <p class="text-sm font-medium">See Beyond the Label</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-3xl mx-auto space-y-8">
+            <!-- Upload Section -->
+            <div class="bg-white rounded-lg shadow-lg border-2 border-primary/20">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-primary mb-2">Analyze Packaged Food</h2>
+                    <p class="text-neutral mb-6">Upload an image of your packaged food to get detailed nutritional
+                        insights</p>
+
+                    <div
+                        class="border-2 border-dashed border-primary/20 rounded-lg p-8 flex flex-col items-center gap-4">
+                        <input type="file" id="food-image" accept="image/*" class="hidden"
+                            onchange="previewImage(event)">
+                        <img id="uploaded-image" class="hidden max-w-xs rounded-lg shadow-lg" alt="Uploaded Image" />
+                        <div class="flex gap-4 mt-4 flex-col items-center">
+                            <button onclick="document.getElementById('food-image').click()"
+                                class="px-4 py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg transition-colors">
+                                Choose Image
+                            </button>
+                            <button id="analyze-btn"
+                                class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors hidden flex items-center gap-2"
+                                onclick="analyzeImage()">
+                                <span id="analyze-text">Analyze</span>
+                                <span id="spinner"
+                                    class="hidden animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4"></span>
+                            </button>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Results -->
+            <div class="bg-white rounded-lg shadow-lg border-2 border-primary/20">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Nutritional Analysis Results</h2>
+                    <div id="analysis-result" class="mt-4 text-neutral">Upload an image to analyze...</div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="bg-white rounded-lg shadow-lg border-2 border-primary/20 p-6">
+                <h2 class="text-xl font-bold text-primary mb-2">Disclaimer</h2>
+                <p class="text-neutral text-sm">NutriLens provides nutritional analysis based on image recognition and
+                    AI predictions. The results are for informational purposes only and should not be considered medical
+                    advice. Please consult a nutritionist or healthcare professional for accurate dietary guidance.</p>
+            </div>
+
+            <!-- Terms of Use -->
+            <div class="bg-white rounded-lg shadow-lg border-2 border-primary/20 p-6">
+                <h2 class="text-xl font-bold text-primary mb-2">Terms of Use</h2>
+                <p class="text-neutral text-sm">By using NutriLens, you agree to the following terms:</p>
+                <ul class="list-disc pl-5 text-neutral text-sm mt-2">
+                    <li>NutriLens provides estimates based on AI and may not always be accurate.</li>
+                    <li>Users should verify results with a certified nutritionist before making dietary decisions.</li>
+                    <li>NutriLens is not responsible for any health-related decisions made based on its analysis.</li>
+                    <li>By uploading images, users confirm they have the right to use and share them.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script Section -->
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgElement = document.getElementById('uploaded-image');
+                    imgElement.src = e.target.result;
+                    imgElement.classList.remove('hidden');
+                    document.getElementById('analyze-btn').classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function analyzeImage() {
+            const fileInput = document.getElementById("food-image");
+            const file = fileInput.files[0];
+            const analyzeBtn = document.getElementById("analyze-btn");
+            const analyzeText = document.getElementById("analyze-text");
+            const spinner = document.getElementById("spinner");
+
+            if (!file) return;
+
+            // ✅ Disable button & show spinner
+            analyzeBtn.disabled = true;
+            analyzeText.classList.add("hidden");
+            spinner.classList.remove("hidden");
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            const resultDiv = document.getElementById("analysis-result");
+            resultDiv.innerHTML = "<p class='text-neutral'>Analyzing food label...</p>";
+
+            try {
+                const response = await fetch("http://192.168.215.142:5000/analyze-food", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.analysis) {
+                    const analysisText = data.analysis.trim();
+                    const ratingMatch = analysisText.match(/^Rating:\s*(\d+)/i);
+                    const rating = ratingMatch ? ratingMatch[1] : "N/A";
+                    const explanation = analysisText.replace(/^Rating:\s*\d+\/10\s*/i, "").trim();
+
+                    resultDiv.innerHTML = `
+                <p class='text-primary text-3xl font-bold mb-2'>Rating: ${rating}/10</p>
+                <div class='text-neutral'>${explanation}</div>
+            `;
+                } else {
+                    resultDiv.innerHTML = "<p class='text-red-500'>Failed to analyze food label.</p>";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                resultDiv.innerHTML = "<p class='text-red-500'>Error processing image.</p>";
+            } finally {
+                // ✅ Re-enable button & hide spinner
+                analyzeBtn.disabled = false;
+                analyzeText.classList.remove("hidden");
+                spinner.classList.add("hidden");
+            }
+        }
+
+
+    </script>
+
+    <!-- Firebase Auth Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB5PmC_MVog8h3apY_dihiWtE-W7B_wz5o",
+            authDomain: "codeforces-1cd9c.firebaseapp.com",
+            projectId: "codeforces-1cd9c",
+            storageBucket: "codeforces-1cd9c.firebasestorage.app",
+            messagingSenderId: "725740122293",
+            appId: "1:725740122293:web:e5fdbdb25becf8793a4efc",
+            measurementId: "G-PKN5WRHG50"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+
+</body>
+
+</html>
