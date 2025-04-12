@@ -58,7 +58,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-    <script>
+<script>
+  // Firebase config - replace with actual values
   window.NEXT_PUBLIC_FIREBASE_API_KEY = "YOUR_API_KEY";
   window.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "YOUR_AUTH_DOMAIN";
   window.NEXT_PUBLIC_FIREBASE_PROJECT_ID = "YOUR_PROJECT_ID";
@@ -68,56 +69,63 @@
   window.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID = "YOUR_MEASUREMENT_ID";
 </script>
 
-<!-- Firebase Config -->
 <script src="config.example.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const auth = firebase.auth();
+  document.addEventListener("DOMContentLoaded", function () {
+    const auth = firebase.auth();
 
-        document.getElementById("loginForm").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value.trim();
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-            if (!email || !password) {
-                alert("Both email and password are required!");
-                return;
-            }
+      if (!email || !password) {
+        alert("Both email and password are required!");
+        return;
+      }
 
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert("Login successful!");
-                window.location.href = "food_model.html";
-            } catch (error) {
-                handleFirebaseError(error);
-            }
-        });
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
 
-        function handleFirebaseError(error) {
-            let errorMessage;
-
-            switch (error.code) {
-                case "auth/invalid-email":
-                    errorMessage = "Invalid email format. Please check your email.";
-                    break;
-                case "auth/user-not-found":
-                    errorMessage = "No account found with this email.";
-                    break;
-                case "auth/wrong-password":
-                    errorMessage = "Incorrect password. Please try again.";
-                    break;
-                case "auth/network-request-failed":
-                    errorMessage = "Network error! Please check your internet connection.";
-                    break;
-                default:
-                    errorMessage = "Login failed! Please try again.";
-            }
-
-            alert(errorMessage);
+        if (user.emailVerified) {
+          alert("Login successful!");
+          window.location.href = "food_model.html";
+        } else {
+          await auth.signOut(); // Force logout
+          alert("Email not verified! Please check your inbox and verify your email.");
         }
+      } catch (error) {
+        handleFirebaseError(error);
+      }
     });
+
+    function handleFirebaseError(error) {
+      let errorMessage;
+
+      switch (error.code) {
+        case "auth/invalid-email":
+          errorMessage = "Invalid email format. Please check your email.";
+          break;
+        case "auth/user-not-found":
+          errorMessage = "No account found with this email.";
+          break;
+        case "auth/wrong-password":
+          errorMessage = "Incorrect password. Please try again.";
+          break;
+        case "auth/network-request-failed":
+          errorMessage = "Network error! Please check your internet connection.";
+          break;
+        default:
+          errorMessage = "Login failed! Please try again.";
+      }
+
+      alert(errorMessage);
+    }
+  });
 </script>
+
 
 
 </body>
