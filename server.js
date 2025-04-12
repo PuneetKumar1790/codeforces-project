@@ -8,14 +8,22 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
+<<<<<<< Updated upstream
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
+=======
+// Rate limiter middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+>>>>>>> Stashed changes
   message: {
     error: "Too many requests. Please try again later.",
   },
 });
 
+<<<<<<< Updated upstream
 app.use(cors({
   origin: "https://codeforces-project.vercel.app"
 }));
@@ -25,7 +33,18 @@ app.use(express.json());
 app.use("/analyze-food", limiter);
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+=======
+app.use(cors());
+app.use(express.json());
 
+// ✅ Apply limiter only to analyze endpoint
+app.use("/analyze-food", limiter);
+>>>>>>> Stashed changes
+
+// 🔑 API Key
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
+// Prompt to analyze food
 const ANALYSIS_PROMPT = `Analyze the given food label data and provide a detailed review of its nutritional quality.  
 
 **IMPORTANT:**  
@@ -48,6 +67,10 @@ app.post("/analyze-food", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
+<<<<<<< Updated upstream
+=======
+    // Step 1: Extract text from the image
+>>>>>>> Stashed changes
     const imageBase64 = req.file.buffer.toString("base64");
     const extractionResponse = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -73,6 +96,10 @@ app.post("/analyze-food", upload.single("image"), async (req, res) => {
 
     const extractedText = choices[0].message.content;
 
+<<<<<<< Updated upstream
+=======
+    // Step 2: Analyze extracted text
+>>>>>>> Stashed changes
     const analysisResponse = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {

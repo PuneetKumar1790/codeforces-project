@@ -1,17 +1,17 @@
 // config.js - Firebase Configuration
 const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    apiKey: "AIzaSyB5PmC_MVog8h3apY_dihiWtE-W7B_wz5o",
+    authDomain: "codeforces-1cd9c.firebaseapp.com",
+    projectId: "codeforces-1cd9c",
+    storageBucket: "codeforces-1cd9c.firebasestorage.app",
+    messagingSenderId: "725740122293",
+    appId: "1:725740122293:web:e5fdbdb25becf8793a4efc",
+    measurementId: "G-PKN5WRHG50"
 };
 
 // Prevent duplicate initialization
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 } else {
-    firebase.app(); // Use existing app
+    firebase.app(); 
 }
