@@ -6,11 +6,15 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
+
+
+app.set('trust proxy', 1);
+
 const upload = multer({ storage: multer.memoryStorage() });
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
   message: {
     error: "Too many requests. Please try again later.",
   },
@@ -48,6 +52,7 @@ app.post("/analyze-food", upload.single("image"), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
     const imageBase64 = req.file.buffer.toString("base64");
+
     const extractionResponse = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -62,7 +67,11 @@ app.post("/analyze-food", upload.single("image"), async (req, res) => {
         temperature: 0.1,
         max_tokens: 2000
       },
-      { headers: { Authorization: `Bearer ${OPENROUTER_API_KEY}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`
+        }
+      }
     );
 
     const choices = extractionResponse.data.choices;
@@ -83,7 +92,11 @@ app.post("/analyze-food", upload.single("image"), async (req, res) => {
         temperature: 0.3,
         max_tokens: 500
       },
-      { headers: { Authorization: `Bearer ${OPENROUTER_API_KEY}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`
+        }
+      }
     );
 
     const analysisText = analysisResponse.data.choices[0].message.content;
@@ -101,5 +114,5 @@ app.post("/analyze-food", upload.single("image"), async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
