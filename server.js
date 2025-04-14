@@ -41,23 +41,19 @@ app.use("/analyze-food", limiter);
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-const ANALYSIS_PROMPT = `Analyze the given food label data and provide a detailed review of its nutritional quality.  
+const ANALYSIS_PROMPT = `
+Analyze the given food label and provide a detailed review based on nutritional quality.
 
-**IMPORTANT:**  
-1. **Start your response with:** "Rating: X/10" where X is the rating.  
-2. **Then, explain why you gave this rating.**  
-3. Consider the following factors:  
-   - Balance of macronutrients (protein, carbohydrates, fats).  
-   - Presence of whole foods versus processed ingredients.  
-   - Count and type of additives or preservatives (highlight harmful ones).  
-   - Added sugar content (mention hidden sugars like glucose syrup, fructose, maltodextrin).  
-   - Allergen warnings (mention if common allergens like nuts, soy, or gluten are present).  
-   - Presence of harmful artificial ingredients (e.g., **MSG, artificial sweeteners, trans fats, excessive sodium**).  
-   - Fiber content (important for gut health and digestion).  
-   - Claims vs. reality (e.g., "high protein" but low protein per serving).  
-   - Any misleading marketing tactics (e.g., **"natural" but contains artificial preservatives**).  
+- **Start with a rating (X/10).**
+- Evaluate key factors like:
+  - Macronutrient balance (protein, carbs, fats)
+  - Whole foods vs. processed ingredients
+  - Harmful additives, preservatives, or artificial ingredients
+  - Sugar content (including hidden sugars)
+  - Allergen warnings (e.g., nuts, soy, gluten)
+  - Fiber and nutritional claims vs reality
 
-4. **Conclude with a short recommendation:** Should the user consume it regularly, occasionally, or avoid it?`;
+Conclude with a brief recommendation: should the user consume it regularly, occasionally, or avoid it?`;
 
 app.post("/analyze-food", upload.single("image"), async (req, res) => {
   try {
